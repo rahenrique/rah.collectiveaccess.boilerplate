@@ -1,0 +1,61 @@
+version: '3'
+services:
+  ca-providence:
+    build: 
+      context: .
+      dockerfile: ./.docker/providence/Dockerfile
+    container_name: ca-providence
+    image: ca-providence
+    volumes:
+      - ca-providence-code:/var/www/html/providence
+      - ./apps/providence/setup.php:/var/www/html/providence/setup.php
+      - ./apps/providence/app/conf/local:/var/www/html/providence/app/conf/local
+    ports:
+      - "8080:80"
+    depends_on:
+      - ca-db
+      # - ca-elastic
+    networks:
+      - ca-network
+  
+  # ca-elastic:
+  #   container_name: ca-elastic
+  #   image: elasticsearch:8.2.0
+  #   environment:
+  #     - discovery.type=single-node
+  #   volumes:
+  #     - ca-elastic-data:/usr/share/elasticsearch/data
+  #     - ./.docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   networks:
+  #     - ca-network
+
+  ca-db:
+    container_name: ca-db
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "ca_user"
+      MYSQL_PASSWORD: "ca_password"
+      MYSQL_DATABASE: "ca"
+    volumes:
+      - ca-db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - ca-network
+
+networks:
+  ca-network:
+    driver: bridge
+
+volumes:
+  ca-db-data:
+    driver: local
+  ca-elastic-data:
+    driver: local
+  ca-providence-code:
+    driver: local
