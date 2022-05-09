@@ -8,11 +8,11 @@ services:
     image: ca-providence
     volumes:
       # for providence
-      # - ca-providence-code:/var/www/html
-      - ./apps/providence/setup.php:/var/www/html/providence/setup.php
-      - ./apps/providence/app/conf/local:/var/www/html/providence/app/conf/local
+      # - ca-providence-code:/var/www
+      - ./apps/providence/setup.php:/var/www/providence/setup.php
+      - ./apps/providence/app/conf/local:/var/www/providence/app/conf/local
       # for pawtucket
-      - ./apps/pawtucket/setup.php:/var/www/html/providence/pawtucket/setup.php
+      - ./apps/pawtucket/setup.php:/var/www/setup.php
     ports:
       - "80:80"
     depends_on:
@@ -27,8 +27,8 @@ services:
   #   container_name: ca-pawtucket
   #   image: ca-pawtucket
   #   volumes:
-  #     - ca-pawtucket-code:/var/www/html/pawtucket
-  #     - ./apps/pawtucket/setup.php:/var/www/html/pawtucket/setup.php
+  #     - ca-pawtucket-code:/var/www/pawtucket
+  #     - ./apps/pawtucket/setup.php:/var/www/pawtucket/setup.php
   #   ports: 
   #     - "80:80"
   #   depends_on:
