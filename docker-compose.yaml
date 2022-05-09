@@ -7,16 +7,35 @@ services:
     container_name: ca-providence
     image: ca-providence
     volumes:
-      - ca-providence-code:/var/www/html/providence
+      # for providence
+      # - ca-providence-code:/var/www/html
       - ./apps/providence/setup.php:/var/www/html/providence/setup.php
       - ./apps/providence/app/conf/local:/var/www/html/providence/app/conf/local
+      # for pawtucket
+      - ./apps/pawtucket/setup.php:/var/www/html/providence/pawtucket/setup.php
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
       - ca-db
-      # - ca-elastic
     networks:
       - ca-network
+  
+  # ca-pawtucket:
+  #   build:
+  #     context: .
+  #     dockerfile: ./.docker/pawtucket/Dockerfile
+  #   container_name: ca-pawtucket
+  #   image: ca-pawtucket
+  #   volumes:
+  #     - ca-pawtucket-code:/var/www/html/pawtucket
+  #     - ./apps/pawtucket/setup.php:/var/www/html/pawtucket/setup.php
+  #   ports: 
+  #     - "80:80"
+  #   depends_on:
+  #     - ca-db
+  #     - ca-providence
+  #   networks:
+  #     - ca-network
   
   # ca-elastic:
   #   container_name: ca-elastic
@@ -55,7 +74,9 @@ networks:
 volumes:
   ca-db-data:
     driver: local
-  ca-elastic-data:
-    driver: local
-  ca-providence-code:
-    driver: local
+  # ca-providence-code:
+  #   driver: local
+  # ca-pawtucket-code:
+  #   driver: local
+  # ca-elastic-data:
+  #   driver: local
