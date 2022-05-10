@@ -1,4 +1,15 @@
 version: '3'
+
+networks:
+  ca-network:
+    driver: bridge
+
+volumes:
+  ca-db-data:
+    driver: local
+  ca-providence-media:
+    driver: local
+
 services:
   ca-providence:
     build: 
@@ -7,30 +18,19 @@ services:
     container_name: ca-providence
     image: ca-providence
     volumes:
-      - ca-providence-code:/var/www/html/providence
+      # for providence
       - ./apps/providence/setup.php:/var/www/html/providence/setup.php
       - ./apps/providence/app/conf/local:/var/www/html/providence/app/conf/local
+      - ./apps/providence/media:/var/www/html/providence/media
+      # - ca-providence-media:/var/www/html/providence/media
+      # for pawtucket
+      - ./apps/pawtucket/setup.php:/var/www/html/setup.php
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
       - ca-db
-      # - ca-elastic
     networks:
       - ca-network
-  
-  # ca-elastic:
-  #   container_name: ca-elastic
-  #   image: elasticsearch:8.2.0
-  #   environment:
-  #     - discovery.type=single-node
-  #   volumes:
-  #     - ca-elastic-data:/usr/share/elasticsearch/data
-  #     - ./.docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
-  #   networks:
-  #     - ca-network
 
   ca-db:
     container_name: ca-db
@@ -47,15 +47,17 @@ services:
       - "3306:3306"
     networks:
       - ca-network
-
-networks:
-  ca-network:
-    driver: bridge
-
-volumes:
-  ca-db-data:
-    driver: local
-  ca-elastic-data:
-    driver: local
-  ca-providence-code:
-    driver: local
+  
+  # ca-elastic:
+  #   container_name: ca-elastic
+  #   image: elasticsearch:8.2.0
+  #   environment:
+  #     - discovery.type=single-node
+  #   volumes:
+  #     - ca-elastic-data:/usr/share/elasticsearch/data
+  #     - ./.docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   networks:
+  #     - ca-network

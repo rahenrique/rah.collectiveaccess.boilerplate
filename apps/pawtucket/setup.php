@@ -6,14 +6,15 @@
 # | |__| (_) | | |  __/ (__| |_| |\ V /  __// ___ \ (_| (_|  __/\__ \__ \
 #  \____\___/|_|_|\___|\___|\__|_| \_/ \___/_/   \_\___\___\___||___/___/
 #
-#				Providence: Cataloguing system for CollectiveAccess
+#				Pawtucket2: Cataloguing system for CollectiveAccess
 #               Open-source collections management software
-#               Version 1.7.13
+#               Version 1.7.9
 #				
 # -------------------------------------------------------------------------------------------
 # 
-# This file defines the basic settings required for the CollectiveAccess Providence 
-# cataloguing module. This is the first file you should modify when configuring the application.
+# This file defines the basic settings required for the CollectiveAccess Pawtucket 
+# collections presentation/access module. This is the first file you should modify 
+# when configuring the application.
 #
 # Need help? Visit https://www.collectiveaccess.org/support/
 #
@@ -55,7 +56,7 @@ if (!defined("__CA_DB_DATABASE__")) {
 # This value will be used on emails, on the login screen, in window titles, etc.
 #
 if (!defined("__CA_APP_DISPLAY_NAME__")) {
-	define("__CA_APP_DISPLAY_NAME__", "Providence - CollectiveAccess");
+	define("__CA_APP_DISPLAY_NAME__", "Pawtucket - CollectiveAccess");
 }
 
 
@@ -147,6 +148,27 @@ if (!defined("__CA_GOOGLE_MAPS_KEY__")) {
 	define("__CA_GOOGLE_MAPS_KEY__", "");
 }
 
+#
+# __CA_THEME__ = name of the theme to use for this Pawtucket instance
+#
+# Themes are collections of views (templates), graphics, CSS, javascript and plugins that determine 
+# the look and feel of the user interface for your instance of Pawtucket.
+#
+# The theme name is a simple alphanumeric string with no punctunation or spaces - just A-Z, a-z, 0-9 and _
+# The name should match a directory name in the themes directory. You can create your own theme by 
+# adding it to the themes directory in an appropriately named directory and setting an entry for it in the
+# $_CA_THEMES_BY_DEVICE below. This list specifies which themes to use for specific user agents. Set the key
+# (left-side value) for an entry to a piece of text or Perl-compatible regular expression that matches the user agent
+# to target. For example, all iPhone-class devices include the word "iPhone" in their user agent string.
+# To assign a theme to use specifically for iPhone devices you would create an entry with a key of 'iphone' (or
+# 'iPhone' as it is case insensitive). The key's right-side value must be the name of a valid theme in your
+# themes/ directory. The special key '_default_' is used when no rule matches a user agent.
+#		
+#
+$_CA_THEMES_BY_DEVICE = [
+	'_default_' 	=> 'default'		// use the 'default' theme for everything else
+];
+
 
 # *** 
 # __   __          _                _                  
@@ -226,7 +248,7 @@ require(__DIR__."/app/helpers/post-setup.php");
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2020 Whirl-i-Gig
+ * Copyright 2008-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
