@@ -12,18 +12,15 @@ volumes:
 
 services:
   ca-providence:
-    build: 
+    build:
       context: .
       dockerfile: ./.docker/providence/Dockerfile
     container_name: ca-providence
     image: ca-providence
     volumes:
-      # for providence
       - ./apps/providence/setup.php:/var/www/html/providence/setup.php
       - ./apps/providence/app/conf/local:/var/www/html/providence/app/conf/local
-      - ./apps/providence/media:/var/www/html/providence/media
-      # - ca-providence-media:/var/www/html/providence/media
-      # for pawtucket
+      - ca-providence-media:/var/www/html/providence/media
       - ./apps/pawtucket/setup.php:/var/www/html/setup.php
     ports:
       - "80:80"
