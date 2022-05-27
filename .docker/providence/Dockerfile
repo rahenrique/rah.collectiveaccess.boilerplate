@@ -88,8 +88,8 @@ RUN ln -s ${CA_PROVIDENCE_DIR}/media ${CA_PAWTUCKET_DIR}/media
 
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} ${WEB_DOCUMENT_ROOT}
 
-COPY ./.docker/providence/000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY ./.docker/providence/php.ini /etc/php/7.4/apache2/php.ini
+COPY ./.docker/providence/apache2/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY ./.docker/providence/apache2/php.ini /etc/php/7.4/apache2/php.ini
 
 # COPY ./.docker/providence/entrypoint.sh /entrypoint.sh
 # RUN chmod 777 /entrypoint.sh
