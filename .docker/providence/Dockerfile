@@ -36,11 +36,11 @@ RUN apt-get update && apt-get install -y apache2 \
     libreoffice \
     php7.4-zip \
     php7.4-intl \
-    git-all
+    git-all \
+    && a2enmod rewrite \
+    && service apache2 restart
 
-RUN a2enmod rewrite && service apache2 restart
-
-#GMAGICK
+# GMAGICK
 RUN apt-get install -y php-pear \
     php7.4-dev \
     graphicsmagick \
@@ -48,17 +48,22 @@ RUN apt-get install -y php-pear \
 	&& pecl install gmagick-2.0.4RC1
 
 
-# WORKDIR ${WEB_DOCUMENT_ROOT}
-# USER ${APACHE_RUN_USER}:${APACHE_RUN_GROUP}
+WORKDIR ${WEB_DOCUMENT_ROOT}
 
 
 # PAWTUCKET
 RUN rm -rf ${WEB_DOCUMENT_ROOT}/*
 RUN git clone --depth 1 --branch ${CA_PAWTUCKET_VERSION} https://github.com/collectiveaccess/pawtucket2.git ${CA_PAWTUCKET_DIR}
+# alternative (using tar.gz file extraction):
+# RUN curl -SsL https://github.com/collectiveaccess/pawtucket2/archive/refs/tags/$CA_PAWTUCKET_VERSION.tar.gz | tar -C /var/www/ -xzf -
+# RUN mv /var/www/pawtucket2-${CA_PAWTUCKET_VERSION}/* ${CA_PAWTUCKET_DIR}
 
 
 # PROVIDENCE
 RUN git clone --depth 1 --branch ${CA_PROVIDENCE_VERSION} https://github.com/collectiveaccess/providence.git ${CA_PROVIDENCE_DIR}
+# alternative (using tar.gz file extraction):
+# RUN curl -SsL https://github.com/collectiveaccess/providence/archive/refs/tags/${CA_PROVIDENCE_VERSION}.tar.gz | tar -C /var/www/ -xzf -
+# RUN mv /var/www/providence-${CA_PROVIDENCE_VERSION} ${CA_PROVIDENCE_DIR}
 
 RUN mkdir ${CA_PROVIDENCE_DIR}/app/tmp/collectiveaccessCache && \
     mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess && \
@@ -74,17 +79,6 @@ RUN mkdir ${CA_PROVIDENCE_DIR}/app/tmp/collectiveaccessCache && \
 # PAWTUCKET (link to media folder)
 RUN ln -s ${CA_PROVIDENCE_DIR}/media ${CA_PAWTUCKET_DIR}/media
 
-
-# RUN curl -SsL https://github.com/collectiveaccess/providence/archive/refs/tags/${CA_PROVIDENCE_VERSION}.tar.gz | tar -C /var/www/ -xzf -
-# RUN mv /var/www/providence-${CA_PROVIDENCE_VERSION} ${CA_PROVIDENCE_DIR}
-# RUN cd ${CA_PROVIDENCE_DIR} && cp setup.php-dist setup.php
-
-# RUN curl -SsL https://github.com/collectiveaccess/pawtucket2/archive/$CA_PAWTUCKET_VERSION.tar.gz | tar -C /var/www/ -xzf -
-# RUN mv ${CA_PAWTUCKET_DIR}/pawtucket2-${CA_PAWTUCKET_VERSION}/* /var/www
-# RUN cd ${CA_PAWTUCKET_DIR} && cp setup.php-dist setup.php
-# RUN sed -i "s@DocumentRoot \/var\/www\/html@DocumentRoot \/var\/www@g" /etc/apache2/sites-available/000-default.conf
-# RUN rm -rf /var/www/html
-# RUN ln -s /${CA_PROVIDENCE_DIR}/media /${CA_PAWTUCKET_DIR}/media
 
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} ${WEB_DOCUMENT_ROOT}
 
