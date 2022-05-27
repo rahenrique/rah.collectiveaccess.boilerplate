@@ -1,15 +1,6 @@
 #!/bin/bash
+set -e
 
-# cd /var/www/html/providence/
-
-# git checkout
-# if ! git ls-files >& /dev/null; then
-#     git clone --depth 1 --branch 1.7.14 https://github.com/collectiveaccess/providence.git . 2>&1
-#     # cp setup.php-dist setup.php
-#     chmod -R 777 /var/www/html/providence/app/tmp
-#     chmod -R 777 /var/www/html/providence/app/log
-#     chmod -R 777 /var/www/html/providence/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache
-#     chmod -R 777 /var/www/html/providence/media
-# fi;
-
-# composer install -o -d /var/www/html
+# #DATABASE INIT/CONFIG
+mysql -h $MYSQL8_1_PORT_3306_TCP_ADDR -uroot -p$MYSQL8_1_ENV_MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" --ssl-mode=DISABLED
+mysql -h $MYSQL8_1_PORT_3306_TCP_ADDR -uroot -p$MYSQL8_1_ENV_MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER';" --ssl-mode=DISABLED
