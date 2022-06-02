@@ -1,8 +1,6 @@
 # CollectiveAccess Boilerplate
 
-CollectiveAccess Boilerplate, using Docker containers, with PHP, Apache and MySQL.
-
-This repository is intended as a starting point for a local environment for development of CollectiveAccess implementations.
+CollectiveAccess Boilerplate, using Docker containers, with PHP, Apache and MySQL. This repository is solely intended as a starting point for a local development environment for CollectiveAccess implementations. I am not affiliated with any company or products mentioned or used in this repository.
 
 **Work In Progress**. See the [issues page](https://github.com/rahenrique/rah.collectiveaccess.boilerplate/issues) for more information.
 
