@@ -27,7 +27,7 @@ This will install the two CollectiveAccess applications: [Pawtucket](https://git
 
 To access each application:
 * Pawtucket: <http://localhost>
-* Providence: <http://localhost:/providence/>
+* Providence: <http://localhost/providence/>
 
 ## Installing a profile
 If you try to access the Pawtucket application for the first time, it will tell you that you need a funcioning Providence installation in order to Pawtucket to work.
