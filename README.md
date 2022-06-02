@@ -23,7 +23,7 @@ $ git clone https://github.com/rahenrique/rah.collectiveaccess.boilerplate.git
 $ docker-compose up
 ```
 
-This will install the two CollectiveAccess applications: Pawtucket (the front-end application) and Providence (the back-end, administrative application)
+This will install the two CollectiveAccess applications: [Pawtucket](https://github.com/collectiveaccess/pawtucket2) (the front-end application) and [Providence](https://github.com/collectiveaccess/providence) (the back-end, administrative application)
 
 To access each application:
 * Pawtucket: <http://localhost>
