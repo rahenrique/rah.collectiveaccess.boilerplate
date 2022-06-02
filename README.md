@@ -4,7 +4,7 @@ CollectiveAccess Boilerplate, using Docker containers, with PHP, Apache and MySQ
 
 This repository is intended as a starting point for a local environment for development of CollectiveAccess implementations.
 
-**Work In Progress**. See the [issues page](https://github.com/rahenrique/rah.collectiveaccess.boilerplate/issues) for more information
+**Work In Progress**. See the [issues page](https://github.com/rahenrique/rah.collectiveaccess.boilerplate/issues) for more information.
 
 ## Prerequisites
 
@@ -40,3 +40,6 @@ A message will show in the interface, like:
 Click to run the installer, or access <http://localhost/providence/install/>
 
 Select one of the available installation profiles. At the end of this proccess, your database will be created with the corresponding tables and initial data, and a admin user will be created. **Be sure to save the provided login and password after the install**.
+
+## That's it!
+See the [official documentation](https://manual.collectiveaccess.org/) to start cataloging your art assets.
