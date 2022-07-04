@@ -9,6 +9,8 @@ volumes:
     driver: local
   ca-providence-media:
     driver: local
+  ca-elastic-data:
+    driver: local
 
 services:
   ca-providence:
@@ -26,6 +28,7 @@ services:
       - "80:80"
     depends_on:
       - ca-db
+      - ca-elastic
     networks:
       - ca-network
 
@@ -44,17 +47,33 @@ services:
       - "3306:3306"
     networks:
       - ca-network
-  
-  # ca-elastic:
-  #   container_name: ca-elastic
-  #   image: elasticsearch:8.2.0
-  #   environment:
-  #     - discovery.type=single-node
-  #   volumes:
-  #     - ca-elastic-data:/usr/share/elasticsearch/data
-  #     - ./.docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
-  #   networks:
-  #     - ca-network
+
+  ca-elastic:
+    container_name: ca-elastic
+    # image: docker.elastic.co/elasticsearch/elasticsearch:8.2.2
+    # image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+    # image: elasticsearch:8.2.2
+    image: elasticsearch:5.6.16
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      # - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
+    #   nofile:
+    #     soft: 262144
+    #     hard: 262144
+    # mem_limit: 1g
+    # cap_add:
+    #   - IPC_LOCK
+    volumes:
+      - ca-elastic-data:/usr/share/elasticsearch/data
+      - ./.docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - ca-network

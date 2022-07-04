@@ -41,3 +41,17 @@ Select one of the available installation profiles. At the end of this proccess, 
 
 ## That's it!
 See the [official documentation](https://manual.collectiveaccess.org/) to start cataloging your art assets.
+
+## Troubleshooting
+### vm.max_map_count is too low
+In case your Elasticsearch container fails to build, and you see an error message telling you that `vm.max_map_count is too low`, perhaps you have to run the following command to increase this value:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
+After that, try to run the container again.
+To permanently fix this issue, edit the `/etc/sysctl.conf` file and add the line:
+```bash
+vm.max_map_count=262144
+```
+
+Reference: https://github.com/docker-library/elasticsearch/issues/111
