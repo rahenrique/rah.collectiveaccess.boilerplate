@@ -10,11 +10,6 @@ ENV APACHE_LOCK_DIR=/var/lock/apache2
 ENV APACHE_LOG_DIR=/var/log/apache2
 ENV TIME_ZONE=America/Sao_Paulo
 
-ENV CA_PROVIDENCE_VERSION=1.7.16
-ENV CA_PROVIDENCE_DIR=${WEB_DOCUMENT_ROOT}/providence
-ENV CA_PAWTUCKET_VERSION=1.7.16
-ENV CA_PAWTUCKET_DIR=${WEB_DOCUMENT_ROOT}
-
 RUN ln -snf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && echo ${TIME_ZONE} > /etc/timezone
 
 RUN apt-get update && apt-get install -y apache2 \
@@ -49,6 +44,12 @@ RUN apt-get install -y php-pear \
 
 
 WORKDIR ${WEB_DOCUMENT_ROOT}
+
+
+ENV CA_PROVIDENCE_VERSION=1.7.16
+ENV CA_PROVIDENCE_DIR=${WEB_DOCUMENT_ROOT}/providence
+ENV CA_PAWTUCKET_VERSION=1.7.16
+ENV CA_PAWTUCKET_DIR=${WEB_DOCUMENT_ROOT}
 
 
 # PAWTUCKET
