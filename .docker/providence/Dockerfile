@@ -1,3 +1,4 @@
+# --------------------------------------------------------------------------------
 # "ca-ubuntu-base" stage with environment variables
 FROM ubuntu:20.04 as ca-ubuntu-base
 
@@ -15,6 +16,7 @@ RUN ln -snf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && echo ${TIME_ZONE}
 
 
 
+# --------------------------------------------------------------------------------
 # "ca-builder-base" stage with dependency instalation
 FROM ca-ubuntu-base as ca-builder-base
 
@@ -38,6 +40,7 @@ RUN apt-get update && apt-get install -y apache2 \
     php7.4-zip \
     php7.4-intl \
     git-all \
+    php-bcmath \
     && a2enmod rewrite \
     && service apache2 restart
 
@@ -48,21 +51,24 @@ RUN apt-get install -y php-pear \
     libgraphicsmagick1-dev \
 	&& pecl install gmagick-2.0.4RC1
 
-
-
-# "ca-backend" stage installs the application
-FROM ca-builder-base as ca-backend
-
-ENV CA_PAWTUCKET_VERSION=1.7.16
-ENV CA_PROVIDENCE_VERSION=1.7.17
-ENV CA_PAWTUCKET_DIR=${WEB_DOCUMENT_ROOT}
-ENV CA_PROVIDENCE_DIR=${WEB_DOCUMENT_ROOT}/providence
-
+# PHP Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN php -r "unlink('composer-setup.php');"
 
 WORKDIR ${WEB_DOCUMENT_ROOT}
 
 
-# PAWTUCKET
+
+# --------------------------------------------------------------------------------
+# "ca-pawtucket-base" stage installs the pawtucket application
+FROM ca-builder-base as ca-pawtucket-base
+
+ENV CA_PAWTUCKET_DIR=${WEB_DOCUMENT_ROOT}
+ENV CA_PAWTUCKET_VERSION=1.7.16
+
+
+# CLONE PAWTUCKET
 RUN rm -rf ${WEB_DOCUMENT_ROOT}/*
 RUN git clone --depth 1 --branch ${CA_PAWTUCKET_VERSION} https://github.com/collectiveaccess/pawtucket2.git ${CA_PAWTUCKET_DIR}
 # alternative (using tar.gz file extraction):
@@ -70,7 +76,17 @@ RUN git clone --depth 1 --branch ${CA_PAWTUCKET_VERSION} https://github.com/coll
 # RUN mv /var/www/pawtucket2-${CA_PAWTUCKET_VERSION}/* ${CA_PAWTUCKET_DIR}
 
 
-# PROVIDENCE
+
+# --------------------------------------------------------------------------------
+# "ca-providence-base" stage installs the providence application
+FROM ca-pawtucket-base as ca-providence-base
+
+ENV CA_PROVIDENCE_DIR=${WEB_DOCUMENT_ROOT}/providence
+ENV CA_PROVIDENCE_VERSION="dev/graphql-api"
+# ENV CA_PROVIDENCE_VERSION=1.7.17
+
+
+# CLONE PROVIDENCE
 RUN git clone --depth 1 --branch ${CA_PROVIDENCE_VERSION} https://github.com/collectiveaccess/providence.git ${CA_PROVIDENCE_DIR}
 # alternative (using tar.gz file extraction):
 # RUN curl -SsL https://github.com/collectiveaccess/providence/archive/refs/tags/${CA_PROVIDENCE_VERSION}.tar.gz | tar -C /var/www/ -xzf -
@@ -92,6 +108,12 @@ RUN ln -s ${CA_PROVIDENCE_DIR}/media ${CA_PAWTUCKET_DIR}/media
 
 
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} ${WEB_DOCUMENT_ROOT}
+
+
+
+# --------------------------------------------------------------------------------
+# "ca-backend" is the final build stage
+FROM ca-providence-base as ca-backend
 
 COPY ./.docker/providence/apache2/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./.docker/providence/apache2/php.ini /etc/php/7.4/apache2/php.ini
