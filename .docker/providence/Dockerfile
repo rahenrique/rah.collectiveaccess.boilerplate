@@ -1,4 +1,5 @@
-FROM ubuntu:20.04
+# "ca-ubuntu-base" stage with environment variables
+FROM ubuntu:20.04 as ca-ubuntu-base
 
 ENV WEB_DOCUMENT_ROOT=/var/www/html
 ENV APACHE_RUN_USER=www-data
@@ -11,6 +12,11 @@ ENV APACHE_LOG_DIR=/var/log/apache2
 ENV TIME_ZONE=America/Sao_Paulo
 
 RUN ln -snf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && echo ${TIME_ZONE} > /etc/timezone
+
+
+
+# "ca-builder-base" stage with dependency instalation
+FROM ca-ubuntu-base as ca-builder-base
 
 RUN apt-get update && apt-get install -y apache2 \
     php7.4 \
@@ -43,13 +49,17 @@ RUN apt-get install -y php-pear \
 	&& pecl install gmagick-2.0.4RC1
 
 
-WORKDIR ${WEB_DOCUMENT_ROOT}
 
+# "ca-backend" stage installs the application
+FROM ca-builder-base as ca-backend
 
-ENV CA_PROVIDENCE_VERSION=1.7.16
-ENV CA_PROVIDENCE_DIR=${WEB_DOCUMENT_ROOT}/providence
 ENV CA_PAWTUCKET_VERSION=1.7.16
+ENV CA_PROVIDENCE_VERSION=1.7.17
 ENV CA_PAWTUCKET_DIR=${WEB_DOCUMENT_ROOT}
+ENV CA_PROVIDENCE_DIR=${WEB_DOCUMENT_ROOT}/providence
+
+
+WORKDIR ${WEB_DOCUMENT_ROOT}
 
 
 # PAWTUCKET
@@ -66,16 +76,16 @@ RUN git clone --depth 1 --branch ${CA_PROVIDENCE_VERSION} https://github.com/col
 # RUN curl -SsL https://github.com/collectiveaccess/providence/archive/refs/tags/${CA_PROVIDENCE_VERSION}.tar.gz | tar -C /var/www/ -xzf -
 # RUN mv /var/www/providence-${CA_PROVIDENCE_VERSION} ${CA_PROVIDENCE_DIR}
 
-RUN mkdir ${CA_PROVIDENCE_DIR}/app/tmp/collectiveaccessCache && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess/images && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess/tilepics && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess/workspace && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess/flv && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess/quicktime && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess/windowsmedia && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess/swf && \
-    mkdir ${CA_PROVIDENCE_DIR}/media/collectiveaccess/mp3
+RUN mkdir -p ${CA_PROVIDENCE_DIR}/app/tmp/collectiveaccessCache && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess/images && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess/tilepics && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess/workspace && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess/flv && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess/quicktime && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess/windowsmedia && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess/swf && \
+    mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess/mp3
 
 # PAWTUCKET (link to media folder)
 RUN ln -s ${CA_PROVIDENCE_DIR}/media ${CA_PAWTUCKET_DIR}/media
