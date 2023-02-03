@@ -29,7 +29,7 @@
 # __CA_DB_HOST__ = Database server host name (often 'localhost')
 #
 if (!defined("__CA_DB_HOST__")) {
-	define("__CA_DB_HOST__", 'ca-db');
+	define("__CA_DB_HOST__", 'cadb');
 }
 
 # __CA_DB_USER__ = Database login user name
@@ -215,7 +215,7 @@ if (!defined('__CA_ALLOW_INSTALLER_TO_OVERWRITE_EXISTING_INSTALLS__')) {
 # For production use you should set this to false. Note that exceptions are always
 # logged to the application log in app/log, regardless of what is set here.
 if (!defined('__CA_STACKTRACE_ON_EXCEPTION__')) {
-	define('__CA_STACKTRACE_ON_EXCEPTION__', false);
+	define('__CA_STACKTRACE_ON_EXCEPTION__', true);
 }
 
 require(__DIR__."/app/helpers/post-setup.php");

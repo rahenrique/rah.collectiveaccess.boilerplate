@@ -30,7 +30,7 @@
 # __CA_DB_HOST__ = Database server host name (often 'localhost')
 #
 if (!defined("__CA_DB_HOST__")) {
-	define("__CA_DB_HOST__", 'ca-db');
+	define("__CA_DB_HOST__", 'cadb');
 }
 
 # __CA_DB_USER__ = Database login user name

@@ -5,35 +5,35 @@ networks:
     driver: bridge
 
 volumes:
-  ca-db-data:
+  cadb-data:
     driver: local
-  ca-providence-media:
+  caprovidence-media:
     driver: local
-  ca-elastic-data:
+  caelastic-data:
     driver: local
 
 services:
-  ca-providence:
+  caprovidence:
     build:
       context: .
       dockerfile: ./.docker/providence/Dockerfile
-    container_name: ca-providence
-    image: ca-providence
+    container_name: caprovidence
+    image: caprovidence
     volumes:
       - ./apps/providence/setup.php:/var/www/html/providence/setup.php
       - ./apps/providence/app/conf/local:/var/www/html/providence/app/conf/local
-      - ca-providence-media:/var/www/html/providence/media
+      - caprovidence-media:/var/www/html/providence/media
       - ./apps/pawtucket/setup.php:/var/www/html/setup.php
     ports:
       - "80:80"
     depends_on:
-      - ca-db
-      - ca-elastic
+      - cadb
+      - caelastic
     networks:
       - ca-network
 
-  ca-db:
-    container_name: ca-db
+  cadb:
+    container_name: cadb
     image: mysql:8
     command: --default-authentication-plugin=mysql_native_password
     environment:
@@ -42,14 +42,14 @@ services:
       MYSQL_PASSWORD: "ca_password"
       MYSQL_DATABASE: "ca"
     volumes:
-      - ca-db-data:/var/lib/mysql
+      - cadb-data:/var/lib/mysql
     ports:
       - "3306:3306"
     networks:
       - ca-network
 
-  ca-elastic:
-    container_name: ca-elastic
+  caelastic:
+    container_name: caelastic
     # image: docker.elastic.co/elasticsearch/elasticsearch:8.2.2
     # image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
     # image: elasticsearch:8.2.2
@@ -70,7 +70,7 @@ services:
     # cap_add:
     #   - IPC_LOCK
     volumes:
-      - ca-elastic-data:/usr/share/elasticsearch/data
+      - caelastic-data:/usr/share/elasticsearch/data
       - ./.docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - "9200:9200"
