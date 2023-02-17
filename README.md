@@ -57,6 +57,10 @@ vm.max_map_count=262144
 Reference: https://github.com/docker-library/elasticsearch/issues/111
 
 ### Elasticsearch not working
-The branch currently in use for **Providence** is set as `"dev/graphql-api"` in order to allow testing the GraphQL API implementation. In this Collective Access' Providence branch, the Elasticsearch implementation is broken. To use Elasticsearch, please edit the files: 
+The branch currently in use for **Providence** is set as `"dev/graphql-api"` in order to allow testing the GraphQL API implementation. In this Collective Access' Providence branch, the Elasticsearch implementation is broken. 
+
+To use Elasticsearch, please edit the files: 
 - `/.docker/providence/Dockerfile`: change the variable `ENV CA_PROVIDENCE_VERSION="dev/graphql-api"` to `ENV CA_PROVIDENCE_VERSION=1.7.16`
 - `/apps/providence/app/conf/local/app.conf`: uncomment the line `# search_engine_plugin = ElasticSearch`
+
+Rebuild the container. This will enable the Elasticsearch plugin to work as intended, but will remove any GraphQL API funcionality.
