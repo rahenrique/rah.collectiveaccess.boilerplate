@@ -6,10 +6,9 @@ ENV WEB_DOCUMENT_ROOT=/var/www/html
 ENV APACHE_RUN_USER=www-data
 ENV APACHE_RUN_GROUP=www-data
 ENV APACHE_LOG_DIR=/var/log/apache2
-ENV APACHE_PID_FILE=/var/run/apache2.pid
 ENV APACHE_RUN_DIR=/var/run/apache2
+ENV APACHE_PID_FILE=/var/run/apache2.pid
 ENV APACHE_LOCK_DIR=/var/lock/apache2
-ENV APACHE_LOG_DIR=/var/log/apache2
 ENV TIME_ZONE=America/Sao_Paulo
 
 RUN ln -snf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && echo ${TIME_ZONE} > /etc/timezone
@@ -21,26 +20,25 @@ RUN ln -snf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && echo ${TIME_ZONE}
 FROM ca-ubuntu-base as ca-builder-base
 
 RUN apt-get update && apt-get install -y apache2 \
-    php7.4 \
-    libapache2-mod-php7.4 \
     curl \
-    php-mysql \
-    mysql-client \
-    curl \
-    php7.4-curl \
-    php7.4-xml \
-    zip \
-    wget \
-    ffmpeg \
     dcraw \
+    ffmpeg \
+    git-all \
     ghostscript \
     imagemagick \
-    php7.4-gd \
+    libapache2-mod-php7.4 \
     libreoffice \
-    php7.4-zip \
+    mysql-client \
+    php7.4 \
+    php7.4-curl \
+    php7.4-gd \
     php7.4-intl \
-    git-all \
+    php7.4-xml \
+    php7.4-zip \
     php-bcmath \
+    php-mysql \
+    wget \
+    zip \
     && a2enmod rewrite \
     && service apache2 restart
 
@@ -52,9 +50,9 @@ RUN apt-get install -y php-pear \
 	&& pecl install gmagick-2.0.4RC1
 
 # PHP Composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-RUN php -r "unlink('composer-setup.php');"
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    php -r "unlink('composer-setup.php');"
 
 WORKDIR ${WEB_DOCUMENT_ROOT}
 
@@ -74,6 +72,7 @@ RUN git clone --depth 1 --branch ${CA_PAWTUCKET_VERSION} https://github.com/coll
 # alternative (using tar.gz file extraction):
 # RUN curl -SsL https://github.com/collectiveaccess/pawtucket2/archive/refs/tags/$CA_PAWTUCKET_VERSION.tar.gz | tar -C /var/www/ -xzf -
 # RUN mv /var/www/pawtucket2-${CA_PAWTUCKET_VERSION}/* ${CA_PAWTUCKET_DIR}
+RUN composer install --working-dir ${CA_PAWTUCKET_DIR}
 
 
 
@@ -91,6 +90,7 @@ RUN git clone --depth 1 --branch ${CA_PROVIDENCE_VERSION} https://github.com/col
 # alternative (using tar.gz file extraction):
 # RUN curl -SsL https://github.com/collectiveaccess/providence/archive/refs/tags/${CA_PROVIDENCE_VERSION}.tar.gz | tar -C /var/www/ -xzf -
 # RUN mv /var/www/providence-${CA_PROVIDENCE_VERSION} ${CA_PROVIDENCE_DIR}
+RUN composer update --working-dir ${CA_PROVIDENCE_DIR}
 
 RUN mkdir -p ${CA_PROVIDENCE_DIR}/app/tmp/collectiveaccessCache && \
     mkdir -p ${CA_PROVIDENCE_DIR}/media/collectiveaccess && \
