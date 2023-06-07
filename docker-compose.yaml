@@ -23,9 +23,9 @@ services:
       - ./apps/providence/setup.php:/var/www/html/providence/setup.php
       - ./apps/providence/app/conf/local:/var/www/html/providence/app/conf/local
       - caprovidence-media:/var/www/html/providence/media
-      - ./apps/pawtucket/setup.php:/var/www/html/setup.php
+      - ./apps/pawtucket/setup.php:/var/www/html/pawtucket/setup.php
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       - cadb
       - caelastic
@@ -50,9 +50,6 @@ services:
 
   caelastic:
     container_name: caelastic
-    # image: docker.elastic.co/elasticsearch/elasticsearch:8.2.2
-    # image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
-    # image: elasticsearch:8.2.2
     image: elasticsearch:5.6.16
     environment:
       - discovery.type=single-node

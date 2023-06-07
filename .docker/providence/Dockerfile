@@ -62,12 +62,13 @@ WORKDIR ${WEB_DOCUMENT_ROOT}
 # "ca-pawtucket-base" stage installs the pawtucket application
 FROM ca-builder-base as ca-pawtucket-base
 
-ENV CA_PAWTUCKET_DIR=${WEB_DOCUMENT_ROOT}
+RUN rm -rf ${WEB_DOCUMENT_ROOT}/*
+
+ENV CA_PAWTUCKET_DIR=${WEB_DOCUMENT_ROOT}/pawtucket
 ENV CA_PAWTUCKET_VERSION=1.7.16
 
 
 # CLONE PAWTUCKET
-RUN rm -rf ${WEB_DOCUMENT_ROOT}/*
 RUN git clone --depth 1 --branch ${CA_PAWTUCKET_VERSION} https://github.com/collectiveaccess/pawtucket2.git ${CA_PAWTUCKET_DIR}
 # alternative (using tar.gz file extraction):
 # RUN curl -SsL https://github.com/collectiveaccess/pawtucket2/archive/refs/tags/$CA_PAWTUCKET_VERSION.tar.gz | tar -C /var/www/ -xzf -
@@ -75,14 +76,13 @@ RUN git clone --depth 1 --branch ${CA_PAWTUCKET_VERSION} https://github.com/coll
 RUN composer install --working-dir ${CA_PAWTUCKET_DIR}
 
 
-
 # --------------------------------------------------------------------------------
 # "ca-providence-base" stage installs the providence application
 FROM ca-pawtucket-base as ca-providence-base
 
 ENV CA_PROVIDENCE_DIR=${WEB_DOCUMENT_ROOT}/providence
-ENV CA_PROVIDENCE_VERSION="dev/graphql-api"
-# ENV CA_PROVIDENCE_VERSION=1.7.17
+ENV CA_PROVIDENCE_VERSION=1.7.17
+# ENV CA_PROVIDENCE_VERSION="dev/graphql-api"
 
 
 # CLONE PROVIDENCE
