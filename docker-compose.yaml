@@ -24,6 +24,7 @@ services:
       - ./apps/providence/app/conf/local:/var/www/html/providence/app/conf/local
       - caprovidence-media:/var/www/html/providence/media
       - ./apps/pawtucket/setup.php:/var/www/html/pawtucket/setup.php
+      - ./apps/pawtucket/app/conf/local:/var/www/html/pawtucket/app/conf/local
     ports:
       - "8080:80"
     depends_on:
